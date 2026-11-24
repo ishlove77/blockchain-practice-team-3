@@ -11,3 +11,4 @@ web/src/deployment.json
 # Sepolia 배포용 비밀값 / 데모 지갑 키
 .env
 .demo-wallets.*.json
+.vercel

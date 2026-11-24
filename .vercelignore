@@ -1,0 +1,7 @@
+.env
+.env.*
+.demo-wallets.*.json
+contracts/
+**/node_modules
+web/dist
+web/src/deployment.json

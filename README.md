@@ -5,6 +5,8 @@
 검수의 기준을 **내용물**에서 **이력**으로 옮깁니다.
 병에 붙은 NFC 봉인 태그에는 *병 ID와 서명키만* 들어가고, 출고 → 보관 → 거래 → 개봉까지의 모든 이력은 스마트 컨트랙트에 쌓입니다.
 
+**라이브:** https://whisky-provenance-ten.vercel.app (Sepolia 컨트랙트 [`0xd90B…4E8A0`](https://sepolia.etherscan.io/address/0xd90B9De899FD4BaA52C3fBE989a5bB444f54E8A0)) · NFC 태그 URL 예: `https://whisky-provenance-ten.vercel.app/#/verify/1`
+
 > 현재 버전은 **NFC 하드웨어 없이** 웹 시뮬레이터로 태그를 대신합니다. 실물 NFC는 같은 인터페이스로 나중에 끼울 수 있게 분리해 두었습니다 → [docs/NFC.md](docs/NFC.md)
 
 ## 기능 (발표 자료 03 · 해결 기준)
