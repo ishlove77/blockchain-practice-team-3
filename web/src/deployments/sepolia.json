@@ -1,0 +1,816 @@
+{
+  "network": "sepolia",
+  "networkName": "Sepolia 테스트넷",
+  "chainId": 11155111,
+  "rpcUrl": "https://ethereum-sepolia-rpc.publicnode.com",
+  "explorer": "https://sepolia.etherscan.io",
+  "address": "0xd90B9De899FD4BaA52C3fBE989a5bB444f54E8A0",
+  "deployBlock": 12202069,
+  "abi": [
+    {
+      "type": "constructor",
+      "inputs": [],
+      "stateMutability": "nonpayable"
+    },
+    {
+      "type": "function",
+      "name": "admin",
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "",
+          "type": "address",
+          "internalType": "address"
+        }
+      ],
+      "stateMutability": "view"
+    },
+    {
+      "type": "function",
+      "name": "bottleCount",
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "",
+          "type": "uint256",
+          "internalType": "uint256"
+        }
+      ],
+      "stateMutability": "view"
+    },
+    {
+      "type": "function",
+      "name": "bottleOfTag",
+      "inputs": [
+        {
+          "name": "",
+          "type": "address",
+          "internalType": "address"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "",
+          "type": "uint256",
+          "internalType": "uint256"
+        }
+      ],
+      "stateMutability": "view"
+    },
+    {
+      "type": "function",
+      "name": "bottlesRegisteredBy",
+      "inputs": [
+        {
+          "name": "distillery",
+          "type": "address",
+          "internalType": "address"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "",
+          "type": "uint256[]",
+          "internalType": "uint256[]"
+        }
+      ],
+      "stateMutability": "view"
+    },
+    {
+      "type": "function",
+      "name": "buy",
+      "inputs": [
+        {
+          "name": "id",
+          "type": "uint256",
+          "internalType": "uint256"
+        }
+      ],
+      "outputs": [],
+      "stateMutability": "payable"
+    },
+    {
+      "type": "function",
+      "name": "checkIn",
+      "inputs": [
+        {
+          "name": "id",
+          "type": "uint256",
+          "internalType": "uint256"
+        },
+        {
+          "name": "location",
+          "type": "string",
+          "internalType": "string"
+        }
+      ],
+      "outputs": [],
+      "stateMutability": "nonpayable"
+    },
+    {
+      "type": "function",
+      "name": "checkOut",
+      "inputs": [
+        {
+          "name": "id",
+          "type": "uint256",
+          "internalType": "uint256"
+        },
+        {
+          "name": "note",
+          "type": "string",
+          "internalType": "string"
+        }
+      ],
+      "outputs": [],
+      "stateMutability": "nonpayable"
+    },
+    {
+      "type": "function",
+      "name": "consign",
+      "inputs": [
+        {
+          "name": "id",
+          "type": "uint256",
+          "internalType": "uint256"
+        },
+        {
+          "name": "warehouse",
+          "type": "address",
+          "internalType": "address"
+        }
+      ],
+      "outputs": [],
+      "stateMutability": "nonpayable"
+    },
+    {
+      "type": "function",
+      "name": "getBottle",
+      "inputs": [
+        {
+          "name": "id",
+          "type": "uint256",
+          "internalType": "uint256"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "",
+          "type": "tuple",
+          "internalType": "struct WhiskyProvenance.Bottle",
+          "components": [
+            {
+              "name": "id",
+              "type": "uint256",
+              "internalType": "uint256"
+            },
+            {
+              "name": "name",
+              "type": "string",
+              "internalType": "string"
+            },
+            {
+              "name": "distillery",
+              "type": "string",
+              "internalType": "string"
+            },
+            {
+              "name": "vintage",
+              "type": "uint16",
+              "internalType": "uint16"
+            },
+            {
+              "name": "ageYears",
+              "type": "uint16",
+              "internalType": "uint16"
+            },
+            {
+              "name": "caskType",
+              "type": "string",
+              "internalType": "string"
+            },
+            {
+              "name": "serial",
+              "type": "string",
+              "internalType": "string"
+            },
+            {
+              "name": "tag",
+              "type": "address",
+              "internalType": "address"
+            },
+            {
+              "name": "owner",
+              "type": "address",
+              "internalType": "address"
+            },
+            {
+              "name": "custodian",
+              "type": "address",
+              "internalType": "address"
+            },
+            {
+              "name": "pendingCustodian",
+              "type": "address",
+              "internalType": "address"
+            },
+            {
+              "name": "opened",
+              "type": "bool",
+              "internalType": "bool"
+            },
+            {
+              "name": "forSale",
+              "type": "bool",
+              "internalType": "bool"
+            },
+            {
+              "name": "price",
+              "type": "uint256",
+              "internalType": "uint256"
+            },
+            {
+              "name": "registeredAt",
+              "type": "uint64",
+              "internalType": "uint64"
+            },
+            {
+              "name": "openedAt",
+              "type": "uint64",
+              "internalType": "uint64"
+            }
+          ]
+        }
+      ],
+      "stateMutability": "view"
+    },
+    {
+      "type": "function",
+      "name": "getHistory",
+      "inputs": [
+        {
+          "name": "id",
+          "type": "uint256",
+          "internalType": "uint256"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "",
+          "type": "tuple[]",
+          "internalType": "struct WhiskyProvenance.Record[]",
+          "components": [
+            {
+              "name": "kind",
+              "type": "uint8",
+              "internalType": "enum WhiskyProvenance.RecordKind"
+            },
+            {
+              "name": "actor",
+              "type": "address",
+              "internalType": "address"
+            },
+            {
+              "name": "counterparty",
+              "type": "address",
+              "internalType": "address"
+            },
+            {
+              "name": "timestamp",
+              "type": "uint64",
+              "internalType": "uint64"
+            },
+            {
+              "name": "temperatureX10",
+              "type": "int32",
+              "internalType": "int32"
+            },
+            {
+              "name": "humidity",
+              "type": "uint16",
+              "internalType": "uint16"
+            },
+            {
+              "name": "amount",
+              "type": "uint256",
+              "internalType": "uint256"
+            },
+            {
+              "name": "note",
+              "type": "string",
+              "internalType": "string"
+            }
+          ]
+        }
+      ],
+      "stateMutability": "view"
+    },
+    {
+      "type": "function",
+      "name": "historyLength",
+      "inputs": [
+        {
+          "name": "id",
+          "type": "uint256",
+          "internalType": "uint256"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "",
+          "type": "uint256",
+          "internalType": "uint256"
+        }
+      ],
+      "stateMutability": "view"
+    },
+    {
+      "type": "function",
+      "name": "list",
+      "inputs": [
+        {
+          "name": "id",
+          "type": "uint256",
+          "internalType": "uint256"
+        },
+        {
+          "name": "price",
+          "type": "uint256",
+          "internalType": "uint256"
+        }
+      ],
+      "outputs": [],
+      "stateMutability": "nonpayable"
+    },
+    {
+      "type": "function",
+      "name": "logEnvironment",
+      "inputs": [
+        {
+          "name": "id",
+          "type": "uint256",
+          "internalType": "uint256"
+        },
+        {
+          "name": "temperatureX10",
+          "type": "int32",
+          "internalType": "int32"
+        },
+        {
+          "name": "humidity",
+          "type": "uint16",
+          "internalType": "uint16"
+        },
+        {
+          "name": "note",
+          "type": "string",
+          "internalType": "string"
+        }
+      ],
+      "outputs": [],
+      "stateMutability": "nonpayable"
+    },
+    {
+      "type": "function",
+      "name": "openedDigest",
+      "inputs": [
+        {
+          "name": "id",
+          "type": "uint256",
+          "internalType": "uint256"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "",
+          "type": "bytes32",
+          "internalType": "bytes32"
+        }
+      ],
+      "stateMutability": "view"
+    },
+    {
+      "type": "function",
+      "name": "participants",
+      "inputs": [
+        {
+          "name": "",
+          "type": "address",
+          "internalType": "address"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "role",
+          "type": "uint8",
+          "internalType": "enum WhiskyProvenance.Role"
+        },
+        {
+          "name": "name",
+          "type": "string",
+          "internalType": "string"
+        }
+      ],
+      "stateMutability": "view"
+    },
+    {
+      "type": "function",
+      "name": "registerBottle",
+      "inputs": [
+        {
+          "name": "input",
+          "type": "tuple",
+          "internalType": "struct WhiskyProvenance.BottleInput",
+          "components": [
+            {
+              "name": "name",
+              "type": "string",
+              "internalType": "string"
+            },
+            {
+              "name": "distillery",
+              "type": "string",
+              "internalType": "string"
+            },
+            {
+              "name": "vintage",
+              "type": "uint16",
+              "internalType": "uint16"
+            },
+            {
+              "name": "ageYears",
+              "type": "uint16",
+              "internalType": "uint16"
+            },
+            {
+              "name": "caskType",
+              "type": "string",
+              "internalType": "string"
+            },
+            {
+              "name": "serial",
+              "type": "string",
+              "internalType": "string"
+            },
+            {
+              "name": "tag",
+              "type": "address",
+              "internalType": "address"
+            }
+          ]
+        }
+      ],
+      "outputs": [
+        {
+          "name": "id",
+          "type": "uint256",
+          "internalType": "uint256"
+        }
+      ],
+      "stateMutability": "nonpayable"
+    },
+    {
+      "type": "function",
+      "name": "reportOpened",
+      "inputs": [
+        {
+          "name": "id",
+          "type": "uint256",
+          "internalType": "uint256"
+        },
+        {
+          "name": "tagSignature",
+          "type": "bytes",
+          "internalType": "bytes"
+        }
+      ],
+      "outputs": [],
+      "stateMutability": "nonpayable"
+    },
+    {
+      "type": "function",
+      "name": "setParticipant",
+      "inputs": [
+        {
+          "name": "account",
+          "type": "address",
+          "internalType": "address"
+        },
+        {
+          "name": "role",
+          "type": "uint8",
+          "internalType": "enum WhiskyProvenance.Role"
+        },
+        {
+          "name": "name",
+          "type": "string",
+          "internalType": "string"
+        }
+      ],
+      "outputs": [],
+      "stateMutability": "nonpayable"
+    },
+    {
+      "type": "function",
+      "name": "transfer",
+      "inputs": [
+        {
+          "name": "id",
+          "type": "uint256",
+          "internalType": "uint256"
+        },
+        {
+          "name": "to",
+          "type": "address",
+          "internalType": "address"
+        }
+      ],
+      "outputs": [],
+      "stateMutability": "nonpayable"
+    },
+    {
+      "type": "function",
+      "name": "unlist",
+      "inputs": [
+        {
+          "name": "id",
+          "type": "uint256",
+          "internalType": "uint256"
+        }
+      ],
+      "outputs": [],
+      "stateMutability": "nonpayable"
+    },
+    {
+      "type": "function",
+      "name": "verifyTagSignature",
+      "inputs": [
+        {
+          "name": "id",
+          "type": "uint256",
+          "internalType": "uint256"
+        },
+        {
+          "name": "digest",
+          "type": "bytes32",
+          "internalType": "bytes32"
+        },
+        {
+          "name": "sig",
+          "type": "bytes",
+          "internalType": "bytes"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "",
+          "type": "bool",
+          "internalType": "bool"
+        }
+      ],
+      "stateMutability": "view"
+    },
+    {
+      "type": "event",
+      "name": "BottleRegistered",
+      "inputs": [
+        {
+          "name": "id",
+          "type": "uint256",
+          "indexed": true,
+          "internalType": "uint256"
+        },
+        {
+          "name": "distillery",
+          "type": "address",
+          "indexed": true,
+          "internalType": "address"
+        },
+        {
+          "name": "tag",
+          "type": "address",
+          "indexed": true,
+          "internalType": "address"
+        }
+      ],
+      "anonymous": false
+    },
+    {
+      "type": "event",
+      "name": "OwnershipTransferred",
+      "inputs": [
+        {
+          "name": "id",
+          "type": "uint256",
+          "indexed": true,
+          "internalType": "uint256"
+        },
+        {
+          "name": "from",
+          "type": "address",
+          "indexed": true,
+          "internalType": "address"
+        },
+        {
+          "name": "to",
+          "type": "address",
+          "indexed": true,
+          "internalType": "address"
+        },
+        {
+          "name": "price",
+          "type": "uint256",
+          "indexed": false,
+          "internalType": "uint256"
+        }
+      ],
+      "anonymous": false
+    },
+    {
+      "type": "event",
+      "name": "ParticipantSet",
+      "inputs": [
+        {
+          "name": "account",
+          "type": "address",
+          "indexed": true,
+          "internalType": "address"
+        },
+        {
+          "name": "role",
+          "type": "uint8",
+          "indexed": false,
+          "internalType": "enum WhiskyProvenance.Role"
+        },
+        {
+          "name": "name",
+          "type": "string",
+          "indexed": false,
+          "internalType": "string"
+        }
+      ],
+      "anonymous": false
+    },
+    {
+      "type": "event",
+      "name": "RecordAdded",
+      "inputs": [
+        {
+          "name": "id",
+          "type": "uint256",
+          "indexed": true,
+          "internalType": "uint256"
+        },
+        {
+          "name": "kind",
+          "type": "uint8",
+          "indexed": true,
+          "internalType": "enum WhiskyProvenance.RecordKind"
+        },
+        {
+          "name": "actor",
+          "type": "address",
+          "indexed": true,
+          "internalType": "address"
+        },
+        {
+          "name": "index",
+          "type": "uint256",
+          "indexed": false,
+          "internalType": "uint256"
+        }
+      ],
+      "anonymous": false
+    },
+    {
+      "type": "error",
+      "name": "AlreadyOpened",
+      "inputs": []
+    },
+    {
+      "type": "error",
+      "name": "BadSignature",
+      "inputs": []
+    },
+    {
+      "type": "error",
+      "name": "InStorage",
+      "inputs": []
+    },
+    {
+      "type": "error",
+      "name": "InvalidAddress",
+      "inputs": []
+    },
+    {
+      "type": "error",
+      "name": "InvalidTag",
+      "inputs": []
+    },
+    {
+      "type": "error",
+      "name": "NotAdmin",
+      "inputs": []
+    },
+    {
+      "type": "error",
+      "name": "NotConsignedToYou",
+      "inputs": []
+    },
+    {
+      "type": "error",
+      "name": "NotCustodian",
+      "inputs": []
+    },
+    {
+      "type": "error",
+      "name": "NotDistillery",
+      "inputs": []
+    },
+    {
+      "type": "error",
+      "name": "NotForSale",
+      "inputs": []
+    },
+    {
+      "type": "error",
+      "name": "NotOwner",
+      "inputs": []
+    },
+    {
+      "type": "error",
+      "name": "NotWarehouse",
+      "inputs": []
+    },
+    {
+      "type": "error",
+      "name": "TagAlreadyUsed",
+      "inputs": []
+    },
+    {
+      "type": "error",
+      "name": "TransferFailed",
+      "inputs": []
+    },
+    {
+      "type": "error",
+      "name": "UnknownBottle",
+      "inputs": []
+    },
+    {
+      "type": "error",
+      "name": "WrongPrice",
+      "inputs": []
+    }
+  ],
+  "directory": [
+    {
+      "address": "0x0c83B63Ed5E6Cc67fd255719EB1d8d3c36726BFE",
+      "label": "하이랜드 크라운 증류소"
+    },
+    {
+      "address": "0xEc2b5A1b61a41Ed9f60b0dCB36e67EABf0d80c3b",
+      "label": "에든버러 보세창고"
+    },
+    {
+      "address": "0xF064FEA43Ae605B7a68F2Cb7468a8ca88cFA3764",
+      "label": "수집가 김서준"
+    },
+    {
+      "address": "0xC4b7095ABf107De25478e7EA4dB8090ceC8f44a3",
+      "label": "수집가 이하은"
+    }
+  ],
+  "demoTags": [
+    {
+      "label": "진품 · Highland Crown 30",
+      "bottleId": 1,
+      "address": "0x00733aF1596F379a347a9203F47faE8D7eAD34C9",
+      "privateKey": "0x4f58d8daeb45f0195b75615e165d003ac820453be08d29ce8b12aa2cae837ff8",
+      "opened": false
+    },
+    {
+      "label": "개봉됨 · Highland Crown 25",
+      "bottleId": 2,
+      "address": "0xA431b6678a0d1c4B3b44D1344055F0C744b445a2",
+      "privateKey": "0x14485cfa618b14ae2fbbdee838fc692a4ef4c77af9fa3e5d7f0d4dfb42117738",
+      "opened": true
+    },
+    {
+      "label": "진품 · Highland Crown 18",
+      "bottleId": 3,
+      "address": "0x36E4eAe4f6ad1A0E9cff8c734a2095bb7789afb8",
+      "privateKey": "0xd3fdda3457c0cb03359b38030d3e98e5f0de275c73f7194a5ca1dcc9094ba09a",
+      "opened": false
+    },
+    {
+      "label": "위조 · #1 ID 복제 태그",
+      "bottleId": 1,
+      "address": "0x949B68d4Bbd2fA7f0280e5e7aeCa44f347466f16",
+      "privateKey": "0xfb5efe9b1beea48917e41527e26a1cbc0f6b63b32aa2c19a0fea51a8d4696f3c",
+      "opened": false,
+      "counterfeit": true
+    }
+  ],
+  "deployedAt": "2026-11-24T10:45:06.795Z"
+}
