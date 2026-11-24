@@ -57,6 +57,30 @@ run.sh       anvil → 빌드 → 배포 → 웹 서버 한 번에
 cd contracts && forge test
 ```
 
+## 공개 배포 (Sepolia + Vercel) — NFC 태그를 찍으면 사이트가 열리게
+
+1. **컨트랙트 배포** — 저장소 루트에 `.env` 생성 (git에 올라가지 않음):
+   ```
+   PRIVATE_KEY=0x...   # Sepolia ETH가 있는 지갑. 이 지갑이 관리자 + 증류소가 됨
+   ```
+   ```bash
+   cd contracts && forge build && cd ../web && npm run deploy:sepolia
+   ```
+   → `web/src/deployments/sepolia.json` 생성 (주소·ABI·데모 태그, 개인키 없음) → **커밋 & push**
+   데모용 창고·수집가 지갑 키는 `.demo-wallets.sepolia.json`(gitignore)에 저장 — MetaMask로 가져와 쓸 수 있음
+2. **Vercel** — vercel.com → Add New → Project → 이 GitHub repo Import → Deploy
+   (`vercel.json`이 `web/`을 Sepolia 모드로 빌드하도록 설정돼 있어 추가 설정 불필요)
+3. **NFC 태그** — NTAG213/215 스티커에 *NFC Tools* 앱으로 URL 레코드 기록:
+   ```
+   https://<프로젝트>.vercel.app/#/verify/1
+   ```
+   폰(아이폰 XS+ / 안드로이드)으로 찍으면 앱 없이 그 병의 이력 페이지가 열립니다.
+
+공개 모드 동작: 이력 조회·태그 시뮬레이터는 지갑 없이 누구나, 기록(등록·입출고·구매)은 MetaMask 서명.
+로컬 개발에서 공개 모드 확인: `npm run dev:sepolia`.
+
+> 고정 URL 스티커는 복사될 수 있어 "이 병이 등록돼 있다"까지만 보여줍니다. 복제 방지는 서명 칩 연동 단계 → [docs/NFC.md](docs/NFC.md)
+
 ## 데모 시나리오
 
 | 탭할 태그 | 결과 |

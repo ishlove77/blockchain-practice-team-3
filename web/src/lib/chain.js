@@ -1,8 +1,30 @@
 import { ethers } from 'ethers'
-import deployment from '../deployment.json'
 
-export { deployment }
-export const provider = new ethers.JsonRpcProvider(deployment.rpcUrl, undefined, { cacheTimeout: -1 })
+// VITE_NETWORK=local(기본) → ./run.sh 가 만든 src/deployment.json (데모 계정 포함)
+// VITE_NETWORK=sepolia     → 커밋된 src/deployments/sepolia.json (MetaMask 사용, 계정 없음)
+export const NETWORK = import.meta.env.VITE_NETWORK ?? 'local'
+const localFiles = import.meta.glob('../deployment.json', { eager: true, import: 'default' })
+const publicFiles = import.meta.glob('../deployments/*.json', { eager: true, import: 'default' })
+export const deployment =
+  NETWORK === 'local' ? Object.values(localFiles)[0] : publicFiles[`../deployments/${NETWORK}.json`]
+if (!deployment) {
+  throw new Error(
+    NETWORK === 'local'
+      ? 'src/deployment.json 이 없습니다. ./run.sh 로 로컬 체인과 배포를 먼저 실행하세요.'
+      : `src/deployments/${NETWORK}.json 이 없습니다. scripts/deploy-sepolia.mjs 로 배포하세요.`,
+  )
+}
+deployment.accounts ??= []
+/** 로컬 데모: 공개 테스트 키로 계정 전환. 공개 네트워크: 브라우저 지갑(MetaMask)으로 서명 */
+export const IS_DEMO_ACCOUNTS = deployment.accounts.length > 0
+export const RPC_URL = import.meta.env.VITE_RPC_URL ?? deployment.rpcUrl
+export const explorerTx = (h) => (deployment.explorer ? `${deployment.explorer}/tx/${h}` : null)
+export const explorerAddr = (a) => (deployment.explorer ? `${deployment.explorer}/address/${a}` : null)
+
+export const provider = new ethers.JsonRpcProvider(RPC_URL, deployment.chainId, {
+  cacheTimeout: -1,
+  staticNetwork: true,
+})
 export const readContract = new ethers.Contract(deployment.address, deployment.abi, provider)
 export const iface = new ethers.Interface(deployment.abi)
 
@@ -21,12 +43,47 @@ export const KIND = [
   { key: 'Opened', label: '봉인 해제 (개봉)', icon: '⚠️', tone: 'danger' },
 ]
 
-export function signerFor(account) {
-  return new ethers.Wallet(account.privateKey, provider)
+/** 서명자: 데모 계정이면 개인키 지갑, 아니면 브라우저 지갑 */
+export async function signerFor(account) {
+  if (account.privateKey) return new ethers.Wallet(account.privateKey, provider)
+  if (!window.ethereum) throw new Error('브라우저 지갑(MetaMask)이 없습니다.')
+  await ensureChain()
+  return new ethers.BrowserProvider(window.ethereum).getSigner(account.address)
 }
 
-export function contractFor(account) {
-  return new ethers.Contract(deployment.address, deployment.abi, signerFor(account))
+export async function contractFor(account) {
+  return new ethers.Contract(deployment.address, deployment.abi, await signerFor(account))
+}
+
+// ── 브라우저 지갑 (공개 네트워크용) ──
+export const hasInjectedWallet = () => typeof window !== 'undefined' && !!window.ethereum
+
+export async function ensureChain() {
+  const hex = '0x' + deployment.chainId.toString(16)
+  const current = await window.ethereum.request({ method: 'eth_chainId' })
+  if (current?.toLowerCase() === hex) return
+  try {
+    await window.ethereum.request({ method: 'wallet_switchEthereumChain', params: [{ chainId: hex }] })
+  } catch (e) {
+    if (e?.code !== 4902) throw e
+    await window.ethereum.request({
+      method: 'wallet_addEthereumChain',
+      params: [{
+        chainId: hex,
+        chainName: deployment.networkName ?? NETWORK,
+        rpcUrls: [deployment.rpcUrl],
+        nativeCurrency: { name: 'Ether', symbol: 'ETH', decimals: 18 },
+        blockExplorerUrls: deployment.explorer ? [deployment.explorer] : [],
+      }],
+    })
+  }
+}
+
+export async function connectWallet() {
+  if (!hasInjectedWallet()) throw new Error('MetaMask가 설치된 브라우저(또는 MetaMask 앱 브라우저)에서 열어 주세요.')
+  const [address] = await window.ethereum.request({ method: 'eth_requestAccounts' })
+  await ensureChain()
+  return { address: ethers.getAddress(address), label: '내 지갑' }
 }
 
 export const short = (a) => (a ? `${a.slice(0, 6)}…${a.slice(-4)}` : '')
@@ -77,13 +134,24 @@ export async function loadAll() {
   const ids = Array.from({ length: count }, (_, i) => i + 1)
   const bottles = await Promise.all(ids.map((id) => readContract.getBottle(id).then(normalizeBottle)))
   const participants = {}
+  const addrs = new Set([...deployment.accounts, ...(deployment.directory ?? [])].map((a) => a.address.toLowerCase()))
+  if (!IS_DEMO_ACCOUNTS) {
+    // 공개 네트워크: 역할 지정 이벤트로 참여자 목록을 만든다
+    try {
+      const logs = await readContract.queryFilter(readContract.filters.ParticipantSet(), deployment.deployBlock ?? 0)
+      for (const l of logs) addrs.add(l.args.account.toLowerCase())
+    } catch {
+      /* 일부 RPC는 범위 조회를 제한 — directory 로 대체 */
+    }
+  }
   await Promise.all(
-    deployment.accounts.map(async (a) => {
-      const p = await readContract.participants(a.address)
-      participants[a.address.toLowerCase()] = { role: Number(p.role), name: p.name }
+    [...addrs].map(async (a) => {
+      const p = await readContract.participants(a)
+      participants[a] = { role: Number(p.role), name: p.name }
     }),
   )
-  return { bottles, participants }
+  const admin = await readContract.admin()
+  return { bottles, participants, admin }
 }
 
 export async function loadHistory(id) {

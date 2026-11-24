@@ -1,12 +1,19 @@
 import { useState } from 'react'
-import { deployment, ROLE } from '../lib/chain'
+import { ethers } from 'ethers'
+import { ROLE } from '../lib/chain'
 import { Addr } from '../components/Bottle'
 
-export default function Admin({ account, participants, send, busy }) {
-  const isAdmin = account.address === deployment.accounts[0].address
-  const [addr, setAddr] = useState(deployment.accounts[6]?.address ?? '')
+const same = (a, b) => !!a && !!b && a.toLowerCase() === b.toLowerCase()
+
+export default function Admin({ account, admin, participants, people, nameOf, send, busy }) {
+  const isAdmin = same(account?.address, admin)
+  const [addr, setAddr] = useState('')
   const [role, setRole] = useState('1')
   const [name, setName] = useState('')
+
+  const rows = people
+    .map((p) => ({ ...p, part: participants[p.address.toLowerCase()] ?? { role: 0, name: '' } }))
+    .sort((a, b) => (same(b.address, admin) ? 1 : 0) - (same(a.address, admin) ? 1 : 0) || b.part.role - a.part.role)
 
   return (
     <div className="page">
@@ -16,35 +23,30 @@ export default function Admin({ account, participants, send, busy }) {
         <table className="table">
           <thead>
             <tr>
-              <th>계정</th>
+              <th>이름</th>
               <th>주소</th>
               <th>온체인 역할</th>
-              <th>등록 이름</th>
             </tr>
           </thead>
           <tbody>
-            {deployment.accounts.map((a, i) => {
-              const p = participants[a.address.toLowerCase()] ?? { role: 0, name: '' }
-              return (
-                <tr key={a.address}>
-                  <td>
-                    {a.label}
-                    {i === 0 && <span className="badge muted">admin</span>}
-                  </td>
-                  <td>
-                    <Addr a={a.address} />
-                  </td>
-                  <td>{ROLE[p.role]}</td>
-                  <td>{p.name || '—'}</td>
-                </tr>
-              )
-            })}
+            {rows.map((r) => (
+              <tr key={r.address}>
+                <td>
+                  {nameOf(r.address)}
+                  {same(r.address, admin) && <span className="badge muted">admin</span>}
+                </td>
+                <td>
+                  <Addr a={r.address} />
+                </td>
+                <td>{ROLE[r.part.role]}</td>
+              </tr>
+            ))}
           </tbody>
         </table>
       </div>
 
       <h3>역할 지정</h3>
-      {!isAdmin && <div className="banner">관리자 계정(플랫폼 관리자)으로 바꿔야 역할을 지정할 수 있습니다.</div>}
+      {!isAdmin && <div className="banner">관리자 계정으로 연결해야 역할을 지정할 수 있습니다.</div>}
       <form
         className="card form"
         onSubmit={(e) => {
@@ -53,14 +55,15 @@ export default function Admin({ account, participants, send, busy }) {
         }}
       >
         <div className="field wide">
-          <label>계정</label>
-          <select value={addr} onChange={(e) => setAddr(e.target.value)}>
-            {deployment.accounts.map((a) => (
-              <option key={a.address} value={a.address}>
-                {a.label} ({a.address})
+          <label>주소</label>
+          <input list="admin-people" value={addr} onChange={(e) => setAddr(e.target.value.trim())} placeholder="0x…" />
+          <datalist id="admin-people">
+            {people.map((p) => (
+              <option key={p.address} value={p.address}>
+                {p.label}
               </option>
             ))}
-          </select>
+          </datalist>
         </div>
         <div className="field">
           <label>역할</label>
@@ -75,7 +78,7 @@ export default function Admin({ account, participants, send, busy }) {
           <input value={name} onChange={(e) => setName(e.target.value)} placeholder="표시 이름" />
         </div>
         <div className="field wide">
-          <button className="primary" disabled={busy || !isAdmin}>
+          <button className="primary" disabled={busy || !isAdmin || !ethers.isAddress(addr)}>
             저장
           </button>
         </div>

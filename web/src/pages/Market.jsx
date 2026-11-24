@@ -1,15 +1,17 @@
 import { useState } from 'react'
 import { ethers } from 'ethers'
-import { deployment, fmtEth } from '../lib/chain'
+import { fmtEth } from '../lib/chain'
 import { BottleSummary } from '../components/Bottle'
 
 const ZERO = ethers.ZeroAddress
 const same = (a, b) => a?.toLowerCase() === b?.toLowerCase()
 
-export default function Market({ account, bottles, participants, nameOf, send, busy }) {
+export default function Market({ account, bottles, participants, people, nameOf, send, busy }) {
   const mine = bottles.filter((b) => same(b.owner, account.address))
   const forSale = bottles.filter((b) => b.forSale && !same(b.owner, account.address))
-  const warehouses = deployment.accounts.filter((a) => participants[a.address.toLowerCase()]?.role === 2)
+  const warehouses = Object.entries(participants)
+    .filter(([, p]) => p.role === 2)
+    .map(([address]) => ({ address: ethers.getAddress(address) }))
 
   return (
     <div className="page">
@@ -37,18 +39,19 @@ export default function Market({ account, bottles, participants, nameOf, send, b
       {mine.length === 0 && <p className="empty">소유한 병이 없습니다. 위 마켓에서 구매하거나 다른 계정으로 바꿔 보세요.</p>}
       <div className="list">
         {mine.map((b) => (
-          <MyBottle key={b.id} b={b} nameOf={nameOf} send={send} busy={busy} warehouses={warehouses} account={account} />
+          <MyBottle key={b.id} b={b} nameOf={nameOf} send={send} busy={busy} warehouses={warehouses} account={account} people={people} />
         ))}
       </div>
     </div>
   )
 }
 
-function MyBottle({ b, nameOf, send, busy, warehouses, account }) {
+function MyBottle({ b, nameOf, send, busy, warehouses, account, people }) {
   const [price, setPrice] = useState('')
   const [wh, setWh] = useState(warehouses[0]?.address ?? '')
   const [to, setTo] = useState('')
-  const others = deployment.accounts.filter((a) => a.address !== account.address)
+  const others = people.filter((a) => !same(a.address, account.address))
+  const toValid = ethers.isAddress(to) && !same(to, account.address)
   const inStorage = b.custodian !== ZERO
 
   return (
@@ -100,15 +103,21 @@ function MyBottle({ b, nameOf, send, busy, warehouses, account }) {
           <div className="action">
             <label>양도</label>
             <div className="row">
-              <select value={to} onChange={(e) => setTo(e.target.value)}>
-                <option value="">받는 사람</option>
+              <input
+                list={`people-${b.id}`}
+                value={to}
+                onChange={(e) => setTo(e.target.value.trim())}
+                placeholder="받는 사람 주소 0x…"
+                aria-label="받는 사람"
+              />
+              <datalist id={`people-${b.id}`}>
                 {others.map((a) => (
                   <option key={a.address} value={a.address}>
-                    {nameOf(a.address)}
+                    {a.label}
                   </option>
                 ))}
-              </select>
-              <button disabled={busy || !to} onClick={() => send(`#${b.id} 양도`, (c) => c.transfer(b.id, to))}>
+              </datalist>
+              <button disabled={busy || !toValid} onClick={() => send(`#${b.id} 양도`, (c) => c.transfer(b.id, to))}>
                 양도
               </button>
             </div>

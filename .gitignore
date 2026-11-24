@@ -7,3 +7,7 @@ contracts/cache/
 contracts/broadcast/
 # 배포마다 새로 생성됨 (./run.sh)
 web/src/deployment.json
+
+# Sepolia 배포용 비밀값 / 데모 지갑 키
+.env
+.demo-wallets.*.json

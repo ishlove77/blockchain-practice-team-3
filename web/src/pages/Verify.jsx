@@ -14,7 +14,7 @@ function useTags() {
   return tags
 }
 
-export default function Verify({ nameOf, send, busy, bottles, arg }) {
+export default function Verify({ nameOf, send, busy, bottles, arg, nfcLanding }) {
   const tags = useTags()
   const [selected, setSelected] = useState(() => (arg?.startsWith('0x') ? arg : tags[0]?.address ?? ''))
   const [result, setResult] = useState(null)
@@ -77,6 +77,20 @@ export default function Verify({ nameOf, send, busy, bottles, arg }) {
 
   return (
     <div className="page">
+      {nfcLanding && (
+        <section className="nfc-landing">
+          <div className="nfc-landing-icon">📱</div>
+          <div>
+            <b>NFC 태그에서 열린 병 #{arg}</b>
+            <div className="hint">출고부터 지금까지 블록체인에 기록된 이력입니다.</div>
+          </div>
+          <a className="btn" href="#/verify">
+            다른 병 확인
+          </a>
+        </section>
+      )}
+      {!nfcLanding && (
+      <>
       <section className="hero">
         <div>
           <h1>탭 한 번으로, 출고부터 지금까지.</h1>
@@ -128,17 +142,32 @@ export default function Verify({ nameOf, send, busy, bottles, arg }) {
           <button onClick={() => lookupId && doLookup(Number(lookupId))}>조회</button>
         </div>
       </section>
+      </>
+      )}
 
       {result?.mode === 'error' && <div className="banner danger">{result.message}</div>}
       {result && result.mode !== 'error' && (
-        <Result result={result} nameOf={nameOf} onSubmitOpened={submitOpened} busy={busy} />
+        <Result result={result} nameOf={nameOf} onSubmitOpened={submitOpened} busy={busy} nfcLanding={nfcLanding} />
       )}
     </div>
   )
 }
 
-function Verdict({ result }) {
+function Verdict({ result, nfcLanding }) {
   const { mode, resp, authentic, bottle } = result
+  if (mode === 'lookup' && nfcLanding) {
+    const b = result.bottle
+    return (
+      <div className={`verdict ${b.opened ? 'warn' : 'good'}`}>
+        <div className="verdict-title">{b.opened ? '⚠ 개봉 기록이 있는 병입니다' : '✓ 등록된 병 · 봉인 유지'}</div>
+        <div>
+          {b.opened
+            ? `${fmtDate(b.openedAt, true)}에 봉인이 해제되었습니다. 내용물은 보증할 수 없습니다.`
+            : `${b.distillery}에서 ${fmtDate(b.registeredAt)}에 출고된 뒤 개봉 기록이 없습니다.`}
+        </div>
+      </div>
+    )
+  }
   if (mode === 'lookup') {
     return (
       <div className="verdict neutral">
@@ -190,7 +219,7 @@ function Verdict({ result }) {
   )
 }
 
-function Result({ result, nameOf, onSubmitOpened, busy }) {
+function Result({ result, nameOf, onSubmitOpened, busy, nfcLanding }) {
   const { bottle, history, resp } = result
   const needsReport = result.mode === 'tap' && result.authentic && resp.opened && bottle && !bottle.opened
   const owners = history.filter((r) => [0, 7, 8].includes(r.kind)).length
@@ -210,7 +239,7 @@ function Result({ result, nameOf, onSubmitOpened, busy }) {
 
   return (
     <section className="result">
-      <Verdict result={result} />
+      <Verdict result={result} nfcLanding={nfcLanding} />
       {needsReport && (
         <div className="banner warn">
           태그가 '개봉됨' 서명을 제공했습니다. 누구나 이 서명을 제출해 개봉 사실을 영구히 기록할 수 있습니다.{' '}

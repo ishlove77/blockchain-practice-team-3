@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { iface, short } from '../lib/chain'
+import { iface, short, IS_DEMO_ACCOUNTS } from '../lib/chain'
 import { addTag, newChip } from '../lib/tags'
 import { BottleSummary } from '../components/Bottle'
 
@@ -20,8 +20,14 @@ export default function Distillery({ account, me, bottles, nameOf, send, busy })
       <div className="page">
         <h2>증류소 출고</h2>
         <div className="banner">
-          현재 계정({account.label})은 증류소가 아닙니다. 상단에서 <b>하이랜드 크라운 증류소</b> 또는 <b>아일라 미스트 증류소</b>로
-          바꾸세요.
+          현재 계정({account.label})은 증류소로 등록되어 있지 않습니다.{' '}
+          {IS_DEMO_ACCOUNTS ? (
+            <>
+              상단에서 <b>하이랜드 크라운 증류소</b> 또는 <b>아일라 미스트 증류소</b>로 바꾸세요.
+            </>
+          ) : (
+            <>관리자가 [참여자] 탭에서 이 주소를 증류소로 지정해야 합니다.</>
+          )}
         </div>
         <Registered list={mine} nameOf={nameOf} />
       </div>

@@ -225,3 +225,10 @@ button:disabled { opacity: 0.45; cursor: not-allowed; }
 .toast.bad { background: var(--bad); color: #fff; }
 .toast code { background: rgba(255,255,255,0.2); color: inherit; }
 .phone-screen select { width: 100%; min-width: 0; text-overflow: ellipsis; }
+.brand { text-decoration: none; color: inherit; }
+.account-meta.big { font-size: 13px; color: var(--ink); flex-wrap: wrap; }
+.dot { width: 8px; height: 8px; border-radius: 50%; background: var(--ok); display: inline-block; }
+.toast a { color: inherit; }
+.nfc-landing { display: flex; align-items: center; gap: 14px; padding: 16px; margin-top: 8px; background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); }
+.nfc-landing > div:nth-child(2) { flex: 1; }
+.nfc-landing-icon { font-size: 28px; }

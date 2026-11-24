@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { BottleSummary } from '../components/Bottle'
+import { IS_DEMO_ACCOUNTS } from '../lib/chain'
 
 const same = (a, b) => a?.toLowerCase() === b?.toLowerCase()
 
@@ -9,7 +10,14 @@ export default function Warehouse({ account, me, bottles, nameOf, send, busy }) 
       <div className="page">
         <h2>보관창고</h2>
         <div className="banner">
-          현재 계정({account.label})은 보관창고가 아닙니다. 상단에서 <b>에든버러 보세창고</b>로 바꾸세요.
+          현재 계정({account.label})은 보관창고로 등록되어 있지 않습니다.{' '}
+          {IS_DEMO_ACCOUNTS ? (
+            <>
+              상단에서 <b>에든버러 보세창고</b>로 바꾸세요.
+            </>
+          ) : (
+            <>관리자가 [참여자] 탭에서 이 주소를 보관창고로 지정해야 합니다.</>
+          )}
         </div>
       </div>
     )
