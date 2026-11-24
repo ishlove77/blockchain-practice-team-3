@@ -1,0 +1,9 @@
+node_modules/
+dist/
+.DS_Store
+.env
+contracts/out/
+contracts/cache/
+contracts/broadcast/
+# 배포마다 새로 생성됨 (./run.sh)
+web/src/deployment.json
