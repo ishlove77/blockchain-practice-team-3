@@ -70,7 +70,7 @@ cd contracts && forge test
    ```
    → `web/src/deployments/sepolia.json` 생성 (주소·ABI·데모 태그, 개인키 없음) → **커밋 & push**
    데모용 창고·수집가 지갑 키는 `.demo-wallets.sepolia.json`(gitignore)에 저장 — MetaMask로 가져와 쓸 수 있음
-2. **Vercel** — vercel.com → Add New → Project → 이 GitHub repo Import → Deploy
+2. **Vercel** — 프로젝트 `whisky-provenance`가 이 repo에 연결돼 있어 `main`에 push하면 자동 배포됩니다 (최초 설정: vercel.com → Add New → Project → Import)
    (`vercel.json`이 `web/`을 Sepolia 모드로 빌드하도록 설정돼 있어 추가 설정 불필요)
 3. **NFC 태그** — NTAG213/215 스티커에 *NFC Tools* 앱으로 URL 레코드 기록:
    ```
