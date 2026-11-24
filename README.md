@@ -103,3 +103,32 @@ cd contracts && forge test
 | 4–6 | 수집가 김서준 · 이하은 · 경매 바이어 박도윤 | 일반 |
 
 > 증류소·제품명은 모두 가상의 이름입니다.
+
+## AI 에이전트(Claude Code 등)로 작업할 때
+
+팀원이 Claude Code 같은 코딩 에이전트에게 이 저장소 작업을 맡길 때 알아야 할 것들입니다. 같은 내용을 Claude Code가 자동으로 읽는 [`CLAUDE.md`](CLAUDE.md)에도 요약해 두었습니다.
+
+**어디를 보면 되나**
+- 비즈니스 규칙의 기준은 `contracts/src/WhiskyProvenance.sol`(역할, 이력 종류 `RecordKind`, 에러). 프론트의 라벨·에러 문구는 `web/src/lib/chain.js`의 `KIND`, `ERROR_KO`가 이 순서·이름과 1:1로 맞아야 함
+- 화면: `web/src/pages/*`, 공용 UI: `web/src/components/Bottle.jsx`
+- 네트워크 선택: `VITE_NETWORK`(`local` 기본 → `src/deployment.json`, `sepolia` → `src/deployments/sepolia.json`)
+
+**검증 방법**
+```bash
+cd contracts && forge test                 # 컨트랙트 (Foundry는 ~/.foundry/bin, PATH에 없으면 export)
+cd web && npm run build && npx oxlint src  # 프론트 빌드·린트
+./run.sh                                   # 로컬 체인+데모로 실제 동작 확인 (http://localhost:5173)
+```
+
+**꼭 지켜야 할 것**
+- **서명 메시지 규칙은 세 곳이 같아야 함**: `WhiskyProvenance.sol`의 `openedDigest`/`_ethSigned`, `web/src/lib/nfc/digest.js`, `docs/NFC.md`. 하나만 바꾸면 진품 태그가 위조로 판정됨
+- **NFC 관련 코드는 `web/src/lib/nfc/` 리더 인터페이스만 거치게** 유지. 실물 NFC는 `webnfc.js` 구현으로 붙이고, 화면 코드에서 태그를 직접 다루지 않기 (`docs/NFC.md`)
+- **비밀값 커밋 금지**: 루트 `.env`(배포 지갑 `PRIVATE_KEY`), `.demo-wallets.*.json`은 gitignore + `.vercelignore` 대상. `web/src/deployments/sepolia.json`에는 데모 NFC 태그 키만 있고 지갑 키는 없어야 함
+- `web/src/deployment.json`(로컬)은 `./run.sh`가 매번 새로 만드는 파일이라 커밋하지 않음
+
+**컨트랙트를 바꿨다면** (함수·이벤트·struct 변경 = ABI 변경)
+1. `forge test` 통과 확인 → 테스트도 함께 수정·추가
+2. 이미 배포된 Sepolia 컨트랙트는 수정 불가 → `cd web && npm run deploy:sepolia`로 **새로 배포**(루트 `.env` 필요, 지갑 Sepolia ETH 소모)하고 새 `sepolia.json` 커밋. 이전 컨트랙트의 이력은 새 컨트랙트로 넘어오지 않음
+3. 이미 기록한 NFC 스티커 URL(`/#/verify/<id>`)은 새 컨트랙트의 병 ID를 가리키게 되므로 팀에 공유
+
+**배포**: `main`에 push하면 Vercel(`whisky-provenance` 프로젝트)이 자동으로 `npm run build:sepolia`로 빌드·배포. 프론트만 바꿨으면 push로 끝
